@@ -1,0 +1,4 @@
+#chessboard {
+  display: grid;
+  grid-template: repeat(7, 20px) / repeat(7, 20px);
+}
