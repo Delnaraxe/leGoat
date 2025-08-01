@@ -1,4 +1,12 @@
 #chessboard {
   display: grid;
-  grid-template: repeat(7, 20px) / repeat(7, 20px);
+  grid-template: repeat(7, 40px) / repeat(7, 40px);
+}
+
+#chessboard > div:nth-child(odd) {
+  background-color: brown;
+}
+
+#chessboard > div:nth-child(even) {
+  background-color: whitesmoke;
 }
