@@ -23,6 +23,14 @@ body {
   grid-template: repeat(7, 40px) / repeat(7, 40px);
 }
 
+#chessboard > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2rem;
+}
+
 #chessboard > div:nth-child(odd) {
   background-color: brown;
 }
