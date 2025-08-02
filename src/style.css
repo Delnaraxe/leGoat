@@ -32,9 +32,9 @@ body {
 }
 
 #chessboard > div:nth-child(odd) {
-  background-color: brown;
+  background-color: hsl(22, 33%, 51%);
 }
 
 #chessboard > div:nth-child(even) {
-  background-color: whitesmoke;
+  background-color: hsl(30, 80%, 83%);
 }
