@@ -1,12 +1,14 @@
 import Horse from "./horse.js";
+import Foe from "./foe.js";
+
+let numberFoe = 0; // Nbr d'ennemis unique + Nbr tous joués
 
 function initMain() {
   const chessboard = document.getElementById("chessboard");
   const newTile = document.createElement("div");
   const size = 7; // Taille du plateau d'échecs (7x7)
 
-  /**
-   * Initialise le plateau d'échecs
+  /** Initialise le plateau d'échecs
    * Crée un tableau de 7x7 cases
    * Chaque case a une position unique (A1, B2, etc..)
    */
@@ -45,5 +47,69 @@ function initMain() {
   // Crée une instance de Horse avec la position initiale "D4"
   const horse = new Horse("D4");
 }
-
 initMain();
+
+/** RNG type de Foe */
+function randomizeTypeFoe() {
+  let number = Math.random();
+  let typeFoe = "";
+  if (number <= 0.5) {
+    typeFoe = "tour";
+  } else if (number <= 0.8) {
+    typeFoe = "fou";
+  } else {
+    typeFoe = "roi";
+  }
+  return typeFoe;
+}
+
+/** RNG position de Foe
+ * Entre A1-7, G1-7, A-G1, A-G7
+ * Lettre horizontal
+ * Nombre vertical
+ * soit col A || G puis 1 à 7
+ * soit row 1 || 7 puis A à G
+ */
+function randomizePositionFoe() {
+  // TODO : bug letter = NaN
+  const fate = Math.random();
+  if (fate < 0.25) {
+    let letter = "A";
+    let number = Math.floor(Math.random() * 7) + 1;
+    let positionFoe = letter + number;
+    return positionFoe;
+  } else if (fate < 0.5 && fate >= 0.25) {
+    let number = 1;
+    const array = ["A", "B", "C", "D", "E", "F", "G"];
+    let numberArray = Math.floor(Math.random() * 7) + 1;
+    let letter = array[numberArray];
+    let positionFoe = letter + number;
+    return positionFoe;
+  } else if (fate < 0.75 && fate >= 0.5) {
+    let letter = "G";
+    let number = Math.floor(Math.random() * 7) + 1;
+    let positionFoe = letter + number;
+    return positionFoe;
+  } else {
+    let number = 7;
+    const array = ["A", "B", "C", "D", "E", "F", "G"];
+    let numberArray = Math.floor(Math.random() * 7) + 1;
+    let letter = array[numberArray];
+    let positionFoe = letter + number;
+    return positionFoe;
+  }
+}
+
+/** Gestion des ennemis
+ * 1 Click = 1 ennemi aléatoire
+ */
+function spawnFoe() {
+  numberFoe++;
+  const typeFoe = randomizeTypeFoe();
+  const positionFoe = randomizePositionFoe();
+
+  new Foe(positionFoe, typeFoe, numberFoe);
+  console.log(typeFoe);
+}
+
+addEventListener("click", spawnFoe, true);
