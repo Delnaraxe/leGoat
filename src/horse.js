@@ -9,8 +9,6 @@ const chessboard = document.getElementById("chessboard");
  * Classe Horse représentant un cheval sur un échiquier
  */
 class Horse {
-  position = "";
-
   /**
    * Constructeur de la classe
    * Il est appelé quand on crée une nouvelle instance de cette classe (par exemple : new Horse("E7"))
@@ -32,21 +30,33 @@ class Horse {
 
     this.position = newPosition;
 
-    const horseIcon = document.createElement("i");
-    horseIcon.classList.add("ph", "ph-horse");
-
     const tileDiv = chessboard.querySelector(`[data-pos="${newPosition}"]`);
     if (!tileDiv) {
       throw new Error(`${errorMessages.TILE_NOT_FOUND} ${newPosition}`);
     }
 
-    // Supprime l'ancien cheval s'il existe
-    const existingHorse = chessboard.querySelector(".ph-horse");
-    if (existingHorse) {
-      existingHorse.remove();
-    }
+    this.remove();
+    this.draw(tileDiv);
+  }
 
-    tileDiv.appendChild(horseIcon);
+  /**
+   * Méthode pour supprimer l'icône du cheval de l'échiquier
+   */
+  remove() {
+    const horseIcon = chessboard.querySelector(".ph-horse");
+    if (horseIcon) {
+      horseIcon.remove();
+    }
+  }
+
+  /**
+   * Méthode pour dessiner l'icône du cheval sur l'échiquier dans la case spécifiée
+   * @param tileDiv La case où dessiner l'icône du cheval
+   */
+  draw(tileDiv) {
+    const icon = document.createElement("i");
+    icon.classList.add("ph", "ph-horse");
+    tileDiv.appendChild(icon);
   }
 }
 

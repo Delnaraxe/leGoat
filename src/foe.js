@@ -21,11 +21,10 @@ const errorMessages = {
 class Foe {
   id = 0;
 
-  constructor(newPosition, typefoe, nbFoe) {
-    this.position = newPosition;
-    this.nature = typefoe;
-    this.id = nbFoe;
-    this.move(newPosition);
+  constructor(initialPosition, typeFoe, idFoe) {
+    this.type = typeFoe;
+    this.id = idFoe; // Assigner un ID unique à chaque ennemi
+    this.move(initialPosition);
   }
 
   move(newPosition) {
@@ -33,15 +32,9 @@ class Foe {
       throw new Error(errorMessages.INVALID_POSITION);
     }
 
-    /** Generation icone */
-    const foeIcon = document.createElement("i");
-    if (this.nature == "tour") {
-      foeIcon.classList.add("ph", "ph-castle-turret");
-    } else if (this.nature == "fou") {
-      foeIcon.classList.add("ph", "ph-crown-cross");
-    } else if (this.nature == "roi") {
-      foeIcon.classList.add("ph", "ph-crown");
-    }
+    this.position = newPosition;
+
+    const foeIcon = this.draw();
 
     const tileDiv = document.querySelector(`[data-pos="${newPosition}"]`);
     if (!tileDiv) {
@@ -49,13 +42,29 @@ class Foe {
     }
     tileDiv.appendChild(foeIcon);
   }
+
+  /**
+   * Méthode pour dessiner l'icône de l'ennemi
+   * @returns L'élément DOM représentant l'icône de l'ennemi
+   */
+  draw() {
+    const icon = document.createElement("i");
+    switch (this.type) {
+      case "tour":
+        icon.classList.add("ph", "ph-castle-turret");
+        break;
+      case "fou":
+        icon.classList.add("ph", "ph-crown-cross");
+        break;
+      case "roi":
+        icon.classList.add("ph", "ph-crown");
+        break;
+      default:
+        throw new Error("Type d'ennemi inconnu: " + this.type);
+    }
+
+    return icon;
+  }
 }
 
 export default Foe;
-
-// const rockIcon = document.createElement("i");
-// rockIcon.classList.add("ph", "ph-castle-turret");
-// const fouIcon = document.createElement("i");
-// fouIcon.classList.add("ph", "ph-crown-cross");
-// const kingIcon = document.createElement("i");
-// kingIcon.classList.add("ph", "ph-crown");
