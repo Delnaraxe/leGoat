@@ -3,6 +3,8 @@ const errorMessages = {
   TILE_NOT_FOUND: "La case n'a pas été trouvée pour la position:",
 };
 
+const chessboard = document.getElementById("chessboard");
+
 /**
  * Classe Horse représentant un cheval sur un échiquier
  */
@@ -33,10 +35,17 @@ class Horse {
     const horseIcon = document.createElement("i");
     horseIcon.classList.add("ph", "ph-horse");
 
-    const tileDiv = document.querySelector(`[data-pos="${newPosition}"]`);
+    const tileDiv = chessboard.querySelector(`[data-pos="${newPosition}"]`);
     if (!tileDiv) {
       throw new Error(`${errorMessages.TILE_NOT_FOUND} ${newPosition}`);
     }
+
+    // Supprime l'ancien cheval s'il existe
+    const existingHorse = chessboard.querySelector(".ph-horse");
+    if (existingHorse) {
+      existingHorse.remove();
+    }
+
     tileDiv.appendChild(horseIcon);
   }
 }

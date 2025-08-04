@@ -22,8 +22,21 @@ function initMain() {
       const letter = String.fromCharCode(64 + i); // Convertit le numéro de colonne en lettre (A, B, ...)
       const coordinates = letter + rowNumber; // Combine la lettre de la colonne et le numéro de la ligne pour former la position (A1, B2, etc..)
       tile.setAttribute("data-pos", coordinates); // Définit la position de la case ("A1", "B2", etc..)
+      tile.addEventListener("click", onTileClick); // Ajoute un listener on click sur la case
       chessboard.appendChild(tile);
     }
+  }
+
+  function onTileClick(event) {
+    let tile = event.target;
+
+    if (tile.tagName.toLowerCase() !== "div") {
+      tile = tile.parentNode; // Si l'élément cliqué n'est pas une case (l'icone du cheval par exemple), on remonte au parent (la div)
+    }
+
+    const position = tile.getAttribute("data-pos");
+    console.log(tile);
+    horse.move(position);
   }
 
   initChessboard();
