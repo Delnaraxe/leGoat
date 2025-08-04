@@ -28,6 +28,8 @@ function initMain() {
   }
 
   function onTileClick(event) {
+    if (!horse) return; // Si le cheval n'est pas encore créé, on ne fait rien
+
     let tile = event.target;
 
     if (tile.tagName.toLowerCase() !== "div") {
@@ -35,7 +37,6 @@ function initMain() {
     }
 
     const position = tile.getAttribute("data-pos");
-    console.log(tile);
     horse.move(position);
   }
 
