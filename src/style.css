@@ -1,3 +1,7 @@
+:root {
+  --blue: #438AF3;
+}
+
 html,
 body {
   height: 100%;
@@ -39,6 +43,11 @@ body {
   background-color: hsl(30, 80%, 83%);
 }
 
-#chessboard > .possible-move {
-  border: 3px solid lightseagreen;
+#chessboard > .valid-move {
+  box-shadow: inset 0 0 0 3px var(--blue);
+  transition: all 0.15s ease-in-out;
+}
+
+#chessboard > .valid-move:hover {
+  box-shadow: inset 0 0 0 40px var(--blue);
 }

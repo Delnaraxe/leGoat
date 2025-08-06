@@ -48,7 +48,7 @@ function initMain() {
     horse.move(position);
 
     spawnFoe(); // Appelle la fonction pour créer un ennemi aléatoire à chaque clic
-    displayHorseMove(); // Affiche les mouvements possibles du cheval
+    displayHorseMove(); // Affiche les mouvements valides du cheval
   }
 
   /** RNG type de Foe */
@@ -56,7 +56,7 @@ function initMain() {
     let number = Math.random();
 
     // TODO: remettre à 0.5, pour l'instant, on fait spawn la tour
-    if (number <= 1) {
+    if (number <= 0.5) {
       return "tour";
     }
 
@@ -73,7 +73,7 @@ function initMain() {
    * @returns Une position aléatoire pour un ennemi
    */
   function randomizePositionFoe() {
-    const possibleSpawnList = [
+    const validSpawnList = [
       "A1",
       "A2",
       "A3",
@@ -100,7 +100,7 @@ function initMain() {
       "B1",
     ];
     const forbiddenSpawnList = foes.map((foe) => foe.position); // Liste des positions interdites pour les ennemis
-    const spawnList = possibleSpawnList.filter(
+    const spawnList = validSpawnList.filter(
       (position) => !forbiddenSpawnList.includes(position)
     ); // Filtre les positions interdites
     const randomIndex = Math.floor(Math.random() * spawnList.length);
@@ -118,7 +118,7 @@ function initMain() {
   }
 
   /**
-   * Affiche les mouvements possibles du cheval
+   * Affiche les mouvements valides du cheval
    */
   function displayHorseMove() {
     // Clear les bordures existantes
@@ -127,18 +127,18 @@ function initMain() {
     for (let tile of chessboard.querySelectorAll("div[data-pos]")) {
       const tilePosition = tile.getAttribute("data-pos");
       if (horse.isValidPosition(tilePosition)) {
-        tile.classList.add("possible-move");
+        tile.classList.add("valid-move");
       }
     }
   }
 
   /**
-   * Supprime les bordures bleues des mouvements possibles
+   * Supprime les bordures bleues des mouvements valides du cheval
    */
   function clearHorseMove() {
-    const allTiles = chessboard.querySelectorAll(".possible-move");
+    const allTiles = chessboard.querySelectorAll(".valid-move");
     for (const tile of allTiles) {
-      tile.classList.remove("possible-move");
+      tile.classList.remove("valid-move");
     }
   }
 
