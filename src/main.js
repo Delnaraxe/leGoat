@@ -43,7 +43,7 @@ function initMain() {
     }
 
     const position = tile.getAttribute("data-pos");
-    if(!horse.isValidPosition(position)) return; // Si la position n'est pas valide, on ne fait rien
+    if (!horse.isValidPosition(position)) return; // Si la position n'est pas valide, on ne fait rien
 
     horse.move(position);
 
@@ -72,33 +72,27 @@ function initMain() {
    * Randomize une position pour un ennemi, en évitant les positions interdites
    * @returns Une position aléatoire pour un ennemi
    */
+  function getBorderPositions(boardSize) {
+    const positions = [];
+    const letters = [];
+    for (let i = 1; i <= boardSize; i++) {
+      letters.push(String.fromCharCode(64 + i));
+    }
+    // ligne du haut et du bas
+    for (let i = 0; i < boardSize; i++) {
+      positions.push(letters[i] + "1");
+      positions.push(letters[i] + boardSize);
+    }
+    // colonnes de gauche et de droite (hors coins déjà ajoutés)
+    for (let j = 2; j < boardSize; j++) {
+      positions.push(letters[0] + j);
+      positions.push(letters[boardSize - 1] + j);
+    }
+    return positions;
+  }
+
   function randomizePositionFoe() {
-    const validSpawnList = [
-      "A1",
-      "A2",
-      "A3",
-      "A4",
-      "A5",
-      "A6",
-      "A7",
-      "B7",
-      "C7",
-      "D7",
-      "E7",
-      "F7",
-      "G7",
-      "G6",
-      "G5",
-      "G4",
-      "G3",
-      "G2",
-      "G1",
-      "F1",
-      "E1",
-      "D1",
-      "C1",
-      "B1",
-    ];
+    const validSpawnList = getBorderPositions(size);
     const forbiddenSpawnList = foes.map((foe) => foe.position); // Liste des positions interdites pour les ennemis
     const spawnList = validSpawnList.filter(
       (position) => !forbiddenSpawnList.includes(position)
