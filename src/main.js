@@ -6,6 +6,7 @@ function initMain() {
   const newTile = document.createElement("div");
   const size = 7; // Taille du plateau d'échecs (7x7)
   const foes = []; // Liste pour stocker les ennemis
+  let horse = null; // Variable pour stocker l'instance de Horse
 
   /** Initialise le plateau d'échecs
    * Crée un tableau de 7x7 cases
@@ -15,6 +16,10 @@ function initMain() {
     for (let i = 1; i <= size; i++) {
       createRow(i);
     }
+
+    horse = new Horse("D4");
+    spawnFoe(); // Crée un ennemi aléatoire au démarrage
+    displayHorseMove();
   }
 
   function createRow(rowNumber) {
@@ -38,9 +43,12 @@ function initMain() {
     }
 
     const position = tile.getAttribute("data-pos");
+    if (!horse.isValidPosition(position)) return; // Si la position n'est pas valide, on ne fait rien
+
     horse.move(position);
 
     spawnFoe(); // Appelle la fonction pour créer un ennemi aléatoire à chaque clic
+    displayHorseMove(); // Affiche les mouvements valides du cheval
   }
 
   /** RNG type de Foe */
@@ -59,77 +67,34 @@ function initMain() {
     return "roi";
   }
 
-  /** RNG position de Foe
-   * Entre A1-7, G1-7, A-G1, A-G7
-   * Lettre horizontal
-   * Nombre vertical
-   * soit col A || G puis 1 à 7
-   * soit row 1 || 7 puis A à G
-   */
-  function randomizePositionFoe() {
-    // TODO : bug letter = NaN
-    const fate = Math.random();
-    if (fate < 0.25) {
-      let letter = "A";
-      let number = Math.floor(Math.random() * 7) + 1;
-      let positionFoe = letter + number;
-      return positionFoe;
-    } else if (fate < 0.5 && fate >= 0.25) {
-      let number = 1;
-      const array = ["A", "B", "C", "D", "E", "F", "G"];
-      let numberArray = Math.floor(Math.random() * 7) + 1;
-      let letter = array[numberArray];
-      let positionFoe = letter + number;
-      return positionFoe;
-    } else if (fate < 0.75 && fate >= 0.5) {
-      let letter = "G";
-      let number = Math.floor(Math.random() * 7) + 1;
-      let positionFoe = letter + number;
-      return positionFoe;
-    } else {
-      let number = 7;
-      const array = ["A", "B", "C", "D", "E", "F", "G"];
-      let numberArray = Math.floor(Math.random() * 7) + 1;
-      let letter = array[numberArray];
-      let positionFoe = letter + number;
-      return positionFoe;
-    }
-  }
-
   /**
-   * TODO: ajouter les positions interdites pour les ennemis (position du cheval, des autres ennemis)
+   * TODO: ajouter la position interdite du cheval
    * Randomize une position pour un ennemi, en évitant les positions interdites
    * @returns Une position aléatoire pour un ennemi
    */
-  function reworkRandomizePositionFoe() {
-    const possibleSpawnList = [
-      "A1",
-      "A2",
-      "A3",
-      "A4",
-      "A5",
-      "A6",
-      "A7",
-      "B7",
-      "C7",
-      "D7",
-      "E7",
-      "F7",
-      "G7",
-      "G6",
-      "G5",
-      "G4",
-      "G3",
-      "G2",
-      "G1",
-      "F1",
-      "E1",
-      "D1",
-      "C1",
-      "B1",
-    ];
+  function getBorderPositions(boardSize) {
+    const positions = [];
+    const letters = [];
+    for (let i = 1; i <= boardSize; i++) {
+      letters.push(String.fromCharCode(64 + i));
+    }
+    // ligne du haut et du bas
+    for (let i = 0; i < boardSize; i++) {
+      positions.push(letters[i] + "1");
+      positions.push(letters[i] + boardSize);
+    }
+    // colonnes de gauche et de droite (hors coins déjà ajoutés)
+    for (let j = 2; j < boardSize; j++) {
+      positions.push(letters[0] + j);
+      positions.push(letters[boardSize - 1] + j);
+    }
+    return positions;
+  }
+
+  function randomizePositionFoe() {
+    const validSpawnList = getBorderPositions(size);
     const forbiddenSpawnList = foes.map((foe) => foe.position); // Liste des positions interdites pour les ennemis
-    const spawnList = possibleSpawnList.filter(
+    const spawnList = validSpawnList.filter(
       (position) => !forbiddenSpawnList.includes(position)
     ); // Filtre les positions interdites
     const randomIndex = Math.floor(Math.random() * spawnList.length);
@@ -141,15 +106,37 @@ function initMain() {
    */
   function spawnFoe() {
     const typeFoe = randomizeTypeFoe();
-    const positionFoe = reworkRandomizePositionFoe();
+    const positionFoe = randomizePositionFoe();
 
     foes.push(new Foe(positionFoe, typeFoe, foes.length));
   }
 
-  initChessboard();
+  /**
+   * Affiche les mouvements valides du cheval
+   */
+  function displayHorseMove() {
+    // Clear les bordures existantes
+    clearHorseMove();
 
-  // Crée une instance de Horse avec la position initiale "D4"
-  const horse = new Horse("D4");
+    for (let tile of chessboard.querySelectorAll("div[data-pos]")) {
+      const tilePosition = tile.getAttribute("data-pos");
+      if (horse.isValidPosition(tilePosition)) {
+        tile.classList.add("valid-move");
+      }
+    }
+  }
+
+  /**
+   * Supprime les bordures bleues des mouvements valides du cheval
+   */
+  function clearHorseMove() {
+    const allTiles = chessboard.querySelectorAll(".valid-move");
+    for (const tile of allTiles) {
+      tile.classList.remove("valid-move");
+    }
+  }
+
+  initChessboard();
 }
 
 initMain();

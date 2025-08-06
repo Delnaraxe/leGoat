@@ -15,7 +15,6 @@ class Horse {
    * Si aucune position n'est donné à la création, on utilise la valeur par défaut "D4" (par exemple : new Horse())
    */
   constructor(initialPosition = "D4") {
-    // Déplace le cheval à la position initiale
     this.move(initialPosition);
   }
 
@@ -57,6 +56,24 @@ class Horse {
     const icon = document.createElement("i");
     icon.classList.add("ph", "ph-horse");
     tileDiv.appendChild(icon);
+  }
+
+  /**
+   * Vérifie si la position est valide en calculant la distance entre les coordonnées
+   * @param position La position à vérifier (ex: "E7")
+   * @returns {boolean} true si la position est valide, false sinon
+   */
+  isValidPosition(position) {
+    const positionToTest = position.split("");
+    const positionHorse = this.position.split("");
+
+    const colDiff = Math.abs(
+      positionToTest[0].charCodeAt(0) - positionHorse[0].charCodeAt(0)
+    );
+    const rowDiff = Math.abs(positionToTest[1] - positionHorse[1]);
+
+    // Vérifie si le mouvement est valide (en L)
+    return (colDiff === 2 && rowDiff === 1) || (colDiff === 1 && rowDiff === 2);
   }
 }
 
